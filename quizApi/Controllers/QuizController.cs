@@ -8,9 +8,9 @@ namespace quiz.API.Controllers;
 [Route("[controller]")]
 public class QuestionController : ControllerBase
 {
-    private readonly MusicQuizDbContext _context;
+    private readonly QuizDbContext _context;
 
-    public QuestionController(MusicQuizDbContext context)
+    public QuestionController(QuizDbContext context)
     {
         _context = context;
     }
@@ -34,68 +34,23 @@ public class QuestionController : ControllerBase
         return question;
     }
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> PutQuestion(int id, Question question)
-    {
-        if (id != question.QuestionId)
-        {
-            return BadRequest();
-        }
-
-        _context.Entry(question).State = EntityState.Modified;
-
-        try
-        {
-            await _context.SaveChangesAsync();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            if (!QuestionExists(id))
-            {
-                return NotFound();
-            }
-            else
-            {
-                throw;
-            }
-        }
-
-        return NoContent();
-    }
-
     [HttpPost]
-    [Route("GetAnswers")]
-    public async Task<ActionResult<Question>> RetrieveAnswers(int[] questionsIds)
+    public async Task<ActionResult<Question>> CreateQuestion(QuestionDto dto)
     {
-        var answers = await (_context.Questions
-            .Where(x => questionsIds.Contains(x.QuestionId))
-            .Select(y => new
-            {
-                QnId = y.QuestionId,
-                QnInWords = y.QuestionBody,
-                Options = new string[] { y.Answer1, y.Answer2, y.Answer3, y.Answer4 },
-                Answer = y.CorrectAnswer1
-            })).ToListAsync();
-        return Ok(answers);
-    }
-
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteQuestion(int id)
-    {
-        var question = await _context.Questions.FindAsync(id);
-        if (question == null)
+        var newQuestion = new Question()
         {
-            return NotFound();
-        }
+            Id = new Guid(),
+            QuestionBody = dto.QuestionBody,
+            Answer1 = dto.Answer1,
+            Answer2 = dto.Answer2,
+            Answer3 = dto.Answer3,
+            Answer4 = dto.Answer4,
+            CorrectAnswer = dto.CorrectAnswer
+        };
 
-        _context.Questions.Remove(question);
+        await _context.AddAsync(newQuestion);
         await _context.SaveChangesAsync();
 
-        return NoContent();
-    }
-
-    private bool QuestionExists(int id)
-    {
-        return _context.Questions.Any(e => e.QuestionId == id);
+        return CreatedAtAction(nameof(GetQuestion), new { id = newQuestion.Id }, newQuestion);
     }
 }

@@ -13,11 +13,4 @@ namespace quizApi.Models
         public string Email { get; set; }
         public int Score { get; set; }
     }
-
-    public class QuizTakerResult
-    {
-        [Key]
-        public int QuizTakerId { get; set; }
-        public int Score { get; set; }
-    }
 }

@@ -8,9 +8,9 @@ namespace QuizAPI.Controllers
     [ApiController]
     public class QuizTakerController : ControllerBase
     {
-        private readonly MusicQuizDbContext _context;
+        private readonly QuizDbContext _context;
 
-        public QuizTakerController(MusicQuizDbContext context)
+        public QuizTakerController(QuizDbContext context)
         {
             _context = context;
         }
@@ -24,85 +24,62 @@ namespace QuizAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<QuizTaker>> GetQuizTaker(int id)
         {
-            var QuizTaker = await _context.QuizTakers.FindAsync(id);
+            var quizTaker = await _context.QuizTakers.FindAsync(id);
 
-            if (QuizTaker == null)
+            if (quizTaker == null)
             {
                 return NotFound();
             }
 
-            return QuizTaker;
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutQuizTaker(int id, QuizTakerResult _quizTakerResult)
-        {
-            if (id != _quizTakerResult.QuizTakerId)
-            {
-                return BadRequest();
-            }
-
-            QuizTaker QuizTaker = _context.QuizTakers.Find(id);
-            QuizTaker.Score = _quizTakerResult.Score;
-
-            _context.Entry(QuizTaker).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!QuizTakerExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            return Ok(quizTaker);
         }
 
         [HttpPost]
-        public async Task<ActionResult<QuizTaker>> PostQuizTaker(QuizTaker QuizTaker)
+        public async Task<ActionResult<QuizTaker>> CreateQuestion(QuizTakerDto dto)
         {
-            var temp = _context.QuizTakers
-                .Where(x => x.Name == QuizTaker.Name
-                && x.Email == QuizTaker.Email)
-                .FirstOrDefault();
-
-            if (temp == null)
+            var newQuizTaker = new QuizTaker()
             {
-                _context.QuizTakers.Add(QuizTaker);
-                await _context.SaveChangesAsync();
-            }
-            else
-                QuizTaker = temp;
+                Name = dto.Name,
+                Email = dto.Email
+            };
 
-            return Ok(QuizTaker);
+            await _context.AddAsync(newQuizTaker);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetQuizTaker), new { id = newQuizTaker.QuizTakerId }, newQuizTaker);
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteQuizTaker(int id)
+        [HttpPut]
+        public async Task<ActionResult<QuizTaker>> AddScore(int score, int id)
         {
-            var QuizTaker = await _context.QuizTakers.FindAsync(id);
-            if (QuizTaker == null)
+            var quizTaker = await _context.QuizTakers.FindAsync(id);
+
+            if (quizTaker == null)
             {
                 return NotFound();
             }
 
-            _context.QuizTakers.Remove(QuizTaker);
+            quizTaker.Score = score;
+
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool QuizTakerExists(int id)
+        [HttpDelete]
+        public async Task<ActionResult> RemoveQuizTaker(int id)
         {
-            return _context.QuizTakers.Any(e => e.QuizTakerId == id);
+            var quizTaker = await _context.QuizTakers.FindAsync(id);
+
+            if (quizTaker == null)
+            {
+                return NotFound();
+            }
+
+            _context.Remove(quizTaker);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
     }
 }
