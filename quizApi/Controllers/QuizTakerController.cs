@@ -40,7 +40,8 @@ namespace QuizAPI.Controllers
             var newQuizTaker = new QuizTaker()
             {
                 Name = dto.Name,
-                Email = dto.Email
+                Email = dto.Email,
+                Score = dto.Score
             };
 
             await _context.AddAsync(newQuizTaker);

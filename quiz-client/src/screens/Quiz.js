@@ -1,16 +1,9 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import Question from "../components/Question";
 import useInfo from "../hooks/useInfo";
 
 function Quiz() {
   const { name } = useInfo();
-
-  const navigate = useNavigate();
-
-  const handleClick = () => {
-    navigate("/result");
-  };
 
   const { questions } = useInfo();
 
@@ -27,6 +20,7 @@ function Quiz() {
       return (
         <Question
           key={id}
+          id={id}
           questionBody={questionBody}
           answer1={answer1}
           answer2={answer2}
@@ -42,7 +36,6 @@ function Quiz() {
     <div>
       <h1>Quiz - Welcome {name}</h1>
       {questionElements}
-      <button onClick={handleClick}>To the results</button>
     </div>
   );
 }

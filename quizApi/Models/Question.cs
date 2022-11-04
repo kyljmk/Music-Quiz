@@ -6,7 +6,7 @@ namespace quizApi.Models
     public class Question
     {
         [Key]
-        public Guid Id { get; set; }
+        public int Id { get; set; }
         [Column(TypeName = "nvarchar(250)")]
         public string QuestionBody { get; set; }
         [Column(TypeName = "nvarchar(50)")]

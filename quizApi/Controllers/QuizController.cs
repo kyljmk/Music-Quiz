@@ -39,7 +39,7 @@ public class QuestionController : ControllerBase
     {
         var newQuestion = new Question()
         {
-            Id = new Guid(),
+
             QuestionBody = dto.QuestionBody,
             Answer1 = dto.Answer1,
             Answer2 = dto.Answer2,
