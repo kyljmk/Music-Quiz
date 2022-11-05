@@ -1,6 +1,7 @@
 import React from "react";
 import Question from "../components/Question";
 import useInfo from "../hooks/useInfo";
+import "../styles/Quiz.css";
 
 function Quiz() {
   const { name } = useInfo();
@@ -32,12 +33,7 @@ function Quiz() {
     }
   );
 
-  return (
-    <div>
-      <h1>Quiz - Welcome {name}</h1>
-      {questionElements}
-    </div>
-  );
+  return <div>{questionElements}</div>;
 }
 
 export default Quiz;

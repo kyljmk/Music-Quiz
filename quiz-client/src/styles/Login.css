@@ -1,0 +1,77 @@
+body {
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.login {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: white;
+    margin-top: 50px;
+    padding: 20px 40px ;
+    border-radius: 35px;
+    border: 3px solid #1DB954;
+    width: 300px;
+}
+
+.login--title {
+    color: #1DB954;
+    margin: 0;
+    align-self: flex-start;
+}
+
+.login--form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-self: flex-start;
+    width: 100%;
+}
+
+.login--nameInput, .login--emailInput {
+    margin-top: 20px;
+    width: 90px;
+    height: 30px;
+    border-radius: 15px;
+    padding-left: 10px;
+    outline: none;
+    color: darkgrey;
+    border: 3px solid #1DB954;
+    font-weight: bold;
+    transition: width 0.4s ease-in-out;
+    align-self: flex-start;
+}
+
+::placeholder {
+    color: darkgrey;
+}
+
+.login--nameInput:focus, .login--emailInput:focus {
+    width: 90%;
+}
+
+.login--button {
+    background-color: #1DB954;
+    align-self: center;
+    margin-top: 30px;
+    margin-bottom: 10px;
+    border: none;
+    color: white;
+    font-weight: bold;
+    padding: 15px 30px;
+    border-radius: 20px;
+    font-size: 16px;
+}
+
+.login--button:hover {
+    scale: 105%;
+    opacity: 0.8;
+    transition: 0.15s ease-in-out;
+}
+
+.login--button:active {
+    scale: 95%
+}
